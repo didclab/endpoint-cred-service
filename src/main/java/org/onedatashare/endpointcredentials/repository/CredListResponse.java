@@ -3,10 +3,10 @@ package org.onedatashare.endpointcredentials.repository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 public class CredListResponse {
-    private Set<String> emailList;
+    private List<String> list;
 }

@@ -12,9 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Document
 public class AccountEndpointCredential extends EndpointCredential{
-    protected String userName;
     private String password;
-//    private transient boolean encrypted;
 
     public void encrypt(String key) throws AlreadyEncryptedException {
         if(this.encrypted){
