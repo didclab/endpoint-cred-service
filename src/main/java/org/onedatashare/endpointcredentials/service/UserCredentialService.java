@@ -1,10 +1,10 @@
 package org.onedatashare.endpointcredentials.service;
 
 import org.onedatashare.endpointcredentials.EndpointCredentialsApplication;
-import org.onedatashare.endpointcredentials.model.credential.UserCredential;
+import org.onedatashare.endpointcredentials.model.credential.entity.UserCredential;
 import org.onedatashare.endpointcredentials.repository.CredListResponse;
 import org.onedatashare.endpointcredentials.repository.UserCredentialRepository;
-import org.onedatashare.endpointcredentials.model.credential.EndpointCredential;
+import org.onedatashare.endpointcredentials.model.credential.entity.EndpointCredential;
 import org.onedatashare.endpointcredentials.model.credential.EndpointCredentialType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;

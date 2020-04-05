@@ -1,9 +1,9 @@
 package org.onedatashare.endpointcredentials.controller;
 
-import org.onedatashare.endpointcredentials.model.credential.AccountEndpointCredential;
-import org.onedatashare.endpointcredentials.model.credential.EndpointCredential;
+import org.onedatashare.endpointcredentials.model.credential.entity.AccountEndpointCredential;
+import org.onedatashare.endpointcredentials.model.credential.entity.EndpointCredential;
 import org.onedatashare.endpointcredentials.model.credential.EndpointCredentialType;
-import org.onedatashare.endpointcredentials.model.credential.OAuthEndpointCredential;
+import org.onedatashare.endpointcredentials.model.credential.entity.OAuthEndpointCredential;
 import org.onedatashare.endpointcredentials.repository.CredListResponse;
 import org.onedatashare.endpointcredentials.service.UserCredentialService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,8 @@
-package org.onedatashare.endpointcredentials.model.credential;
+package org.onedatashare.endpointcredentials.model.credential.entity;
 
 import lombok.Data;
+import org.onedatashare.endpointcredentials.model.credential.entity.AccountEndpointCredential;
+import org.onedatashare.endpointcredentials.model.credential.entity.OAuthEndpointCredential;
 
 import java.util.HashMap;
 

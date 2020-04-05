@@ -1,7 +1,8 @@
-package org.onedatashare.endpointcredentials.model.credential;
+package org.onedatashare.endpointcredentials.model.credential.entity;
 
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.onedatashare.endpointcredentials.model.credential.EndpointCredentialType;
 import org.onedatashare.endpointcredentials.model.error.InvalidTypeException;
 import org.springframework.data.mongodb.core.mapping.Document;
 

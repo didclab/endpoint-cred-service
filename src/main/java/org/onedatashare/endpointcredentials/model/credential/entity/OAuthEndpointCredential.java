@@ -1,4 +1,4 @@
-package org.onedatashare.endpointcredentials.model.credential;
+package org.onedatashare.endpointcredentials.model.credential.entity;
 
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,7 +10,7 @@ import java.util.Date;
  */
 @Data
 @Document
-public class OAuthEndpointCredential extends EndpointCredential{
+public class OAuthEndpointCredential extends EndpointCredential {
     private String token;
     private boolean tokenExpires = false;
     private Date expiresAt;

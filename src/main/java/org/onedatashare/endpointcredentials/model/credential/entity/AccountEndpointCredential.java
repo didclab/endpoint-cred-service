@@ -1,4 +1,4 @@
-package org.onedatashare.endpointcredentials.model.credential;
+package org.onedatashare.endpointcredentials.model.credential.entity;
 
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,6 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Data
 @Document
-public class AccountEndpointCredential extends EndpointCredential{
-    private String password;
+public class AccountEndpointCredential extends EndpointCredential {
+    private String secret;
 }
