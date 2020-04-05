@@ -10,5 +10,12 @@ import java.util.HashMap;
 @Data
 public class UserCredential {
     private String email;
-    private HashMap<String, HashMap<String, EndpointCredential>> credentialMap;
+    private HashMap<String, OAuthEndpointCredential> dropbox;
+    private HashMap<String, OAuthEndpointCredential> gdrive;
+    private HashMap<String, OAuthEndpointCredential> box;
+    private HashMap<String, OAuthEndpointCredential> globus;
+    private HashMap<String, AccountEndpointCredential> http;
+    private HashMap<String, AccountEndpointCredential> ftp;
+    private HashMap<String, AccountEndpointCredential> sftp;
+    private HashMap<String, AccountEndpointCredential> s3;
 }

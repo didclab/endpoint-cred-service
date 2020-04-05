@@ -19,13 +19,13 @@ public class EndpointCredentialController {
     private UserCredentialService userCredentialService;
 
     @GetMapping("/{type}")
-    public Mono<CredListResponse> getCredential(@PathVariable String type, Mono<Principal> principal) {
+    public Mono<CredListResponse> getCredential(@PathVariable EndpointCredentialType type, Mono<Principal> principal) {
         return principal.map(Principal::getName)
                 .flatMap(userId -> userCredentialService.fetchCredentialList(userId, type));
     }
 
     @GetMapping("/{type}/{accountId}")
-    public Mono<EndpointCredential> getCredential(@PathVariable String type,
+    public Mono<EndpointCredential> getCredential(@PathVariable EndpointCredentialType type,
                                                   @PathVariable String accountId, Mono<Principal> principal) {
         return principal.map(Principal::getName)
                 .flatMap(userId -> userCredentialService.fetchCredential(userId, type, accountId));
@@ -46,7 +46,7 @@ public class EndpointCredentialController {
     }
 
     @DeleteMapping("/{type}/{accountId}")
-    public Mono<Void> deleteCredential(@PathVariable String type,
+    public Mono<Void> deleteCredential(@PathVariable EndpointCredentialType type,
                                        @PathVariable String accountId, Mono<Principal> principal) {
         return principal.map(Principal::getName)
                 .flatMap(userId -> userCredentialService.deleteCredential(userId, type, accountId));

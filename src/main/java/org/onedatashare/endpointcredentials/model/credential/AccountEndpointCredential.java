@@ -1,8 +1,6 @@
 package org.onedatashare.endpointcredentials.model.credential;
 
 import lombok.Data;
-import org.onedatashare.endpointcredentials.model.error.AlreadyDecryptedException;
-import org.onedatashare.endpointcredentials.model.error.AlreadyEncryptedException;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
@@ -13,18 +11,4 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class AccountEndpointCredential extends EndpointCredential{
     private String password;
-
-    public void encrypt(String key) throws AlreadyEncryptedException {
-        if(this.encrypted){
-            throw new AlreadyEncryptedException();
-        }
-        this.encrypted = true;
-    }
-
-    public void decrypt(String key) throws AlreadyDecryptedException {
-        if(this.encrypted == false){
-            throw new AlreadyDecryptedException();
-        }
-        this.encrypted = false;
-    }
 }
