@@ -17,11 +17,6 @@ public class OAuthEndpointCredential extends EndpointCredential{
     private String refreshToken;
     private boolean refreshTokenExpires = false;
 
-    public OAuthEndpointCredential(EndpointCredentialType type, String token) {
-        this.type = type;
-        this.token = token;
-    }
-
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
