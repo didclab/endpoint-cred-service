@@ -12,6 +12,9 @@ import reactor.core.publisher.Mono;
 
 import java.security.Principal;
 
+/**
+ * Rest controller for handing request for operations on endpoint credential database
+ */
 @RestController
 @RequestMapping("/endpoint-cred")
 public class EndpointCredentialController {
