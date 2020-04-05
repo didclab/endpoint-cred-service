@@ -54,14 +54,12 @@ public class UserCredentialService {
      */
     private Set<String> getCredentialList(UserCredential userCredential, EndpointCredentialType type){
         try{
-            Class classRef = Class.forName(UserCredential.class.getName());
+            Class classRef = UserCredential.class;
             Method method = classRef.getDeclaredMethod("get" + StringUtils.capitalize(type.toString()));
-            Object instance = userCredential;
-            HashMap hashMap = (HashMap) method.invoke(instance);
+            HashMap hashMap = (HashMap) method.invoke(userCredential);
             if(hashMap != null)
                 return hashMap.keySet();
-        } catch (ClassNotFoundException | IllegalAccessException
-                | NoSuchMethodException | InvocationTargetException e) {
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             EndpointCredentialsApplication.logger.error(e.getMessage());
         }
         return new HashSet<>();
@@ -76,14 +74,12 @@ public class UserCredentialService {
      */
     private EndpointCredential getCredential(UserCredential userCredential, EndpointCredentialType type, String id){
         try{
-            Class classRef = Class.forName(UserCredential.class.getName());
+            Class classRef = UserCredential.class;
             Method method = classRef.getDeclaredMethod("get" + StringUtils.capitalize(type.toString()));
-            Object instance = userCredential;
-            HashMap hashMap = (HashMap) method.invoke(instance);
-            if(hashMap != null && hashMap.get(id)!=null)
+            HashMap hashMap = (HashMap) method.invoke(userCredential);
+            if(hashMap != null && hashMap.get(id) != null)
                 return (EndpointCredential) hashMap.get(id);
-        } catch (ClassNotFoundException | IllegalAccessException
-                | NoSuchMethodException | InvocationTargetException e) {
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             EndpointCredentialsApplication.logger.error(e.getMessage());
         }
         return new EndpointCredential();
