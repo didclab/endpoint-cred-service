@@ -1,8 +1,8 @@
 package org.onedatashare.endpointcredentials.model.credential.entity;
 
 import lombok.Data;
-import org.onedatashare.endpointcredentials.model.credential.entity.AccountEndpointCredential;
-import org.onedatashare.endpointcredentials.model.credential.entity.OAuthEndpointCredential;
+import org.onedatashare.endpointcredentials.model.credential.encrypted.AccountEndpointCredentialEncrypted;
+import org.onedatashare.endpointcredentials.model.credential.encrypted.OAuthEndpointCredentialEncrypted;
 
 import java.util.HashMap;
 
@@ -12,12 +12,12 @@ import java.util.HashMap;
 @Data
 public class UserCredential {
     private String email;
-    private HashMap<String, OAuthEndpointCredential> dropbox;
-    private HashMap<String, OAuthEndpointCredential> gdrive;
-    private HashMap<String, OAuthEndpointCredential> box;
-    private HashMap<String, OAuthEndpointCredential> globus;
-    private HashMap<String, AccountEndpointCredential> http;
-    private HashMap<String, AccountEndpointCredential> ftp;
-    private HashMap<String, AccountEndpointCredential> sftp;
-    private HashMap<String, AccountEndpointCredential> s3;
+    private HashMap<String, OAuthEndpointCredentialEncrypted> dropbox;
+    private HashMap<String, OAuthEndpointCredentialEncrypted> gdrive;
+    private HashMap<String, OAuthEndpointCredentialEncrypted> box;
+    private HashMap<String, OAuthEndpointCredentialEncrypted> globus;
+    private HashMap<String, AccountEndpointCredentialEncrypted> http;
+    private HashMap<String, AccountEndpointCredentialEncrypted> ftp;
+    private HashMap<String, AccountEndpointCredentialEncrypted> sftp;
+    private HashMap<String, AccountEndpointCredentialEncrypted> s3;
 }

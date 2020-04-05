@@ -14,7 +14,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class EndpointCredential extends Object{
     protected String accountId;
-    protected EndpointCredentialType type;
 
     @SneakyThrows
     @Override

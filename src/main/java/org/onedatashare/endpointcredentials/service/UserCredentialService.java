@@ -1,6 +1,12 @@
 package org.onedatashare.endpointcredentials.service;
 
 import org.onedatashare.endpointcredentials.EndpointCredentialsApplication;
+import org.onedatashare.endpointcredentials.encryption.AccountEndpointCredentialHelper;
+import org.onedatashare.endpointcredentials.encryption.OAuthEndpointCredentialHelper;
+import org.onedatashare.endpointcredentials.model.credential.encrypted.AccountEndpointCredentialEncrypted;
+import org.onedatashare.endpointcredentials.model.credential.encrypted.OAuthEndpointCredentialEncrypted;
+import org.onedatashare.endpointcredentials.model.credential.entity.AccountEndpointCredential;
+import org.onedatashare.endpointcredentials.model.credential.entity.OAuthEndpointCredential;
 import org.onedatashare.endpointcredentials.model.credential.entity.UserCredential;
 import org.onedatashare.endpointcredentials.repository.CredListResponse;
 import org.onedatashare.endpointcredentials.repository.UserCredentialRepository;
@@ -25,10 +31,16 @@ import java.util.*;
 @Service
 public class UserCredentialService {
     @Autowired
-    ReactiveMongoTemplate template;
+    private ReactiveMongoTemplate template;
 
     @Autowired
-    UserCredentialRepository repository;
+    private UserCredentialRepository repository;
+
+    @Autowired
+    private AccountEndpointCredentialHelper accountEndpointCredentialHelper;
+
+    @Autowired
+    private OAuthEndpointCredentialHelper oAuthEndpointCredentialHelper;
 
     private static Query getFindDocumentByIdQuery(String userId){
         return new Query().addCriteria(Criteria.where("_id").is(encodeEmail(userId)));
@@ -96,6 +108,11 @@ public class UserCredentialService {
     public Mono<Void> saveCredential(String userId, EndpointCredentialType type, EndpointCredential endpointCredential) {
         Query query = getFindDocumentByIdQuery(userId);
         String accountId = encodeEmail(endpointCredential.getAccountId());
+        if(endpointCredential instanceof AccountEndpointCredential) {
+            endpointCredential = accountEndpointCredentialHelper.getEncryptedAccountEndpointCredential((AccountEndpointCredential) endpointCredential);
+        }else if(endpointCredential instanceof OAuthEndpointCredential){
+            endpointCredential = oAuthEndpointCredentialHelper.getEncryptedOAuthEndpointCredential((OAuthEndpointCredential) endpointCredential);
+        }
         Update update = new Update().set(createPath(type, accountId), endpointCredential);
         return template.upsert(query, update, UserCredential.class).then();
     }
@@ -129,7 +146,15 @@ public class UserCredentialService {
     public Mono<EndpointCredential> fetchCredential(final String userId, final EndpointCredentialType type, final String accountId){
         String tempUserId = encodeEmail(userId), tempAccountId = encodeEmail(accountId);
         return repository.findById(tempUserId)
-                .map(userCredential -> getCredential(userCredential, type, tempAccountId));
+                .map(userCredential -> getCredential(userCredential, type, tempAccountId))
+                .map((credential) -> {
+                    if(credential instanceof AccountEndpointCredentialEncrypted) {
+                        credential = accountEndpointCredentialHelper.getAccountEndpointCredential((AccountEndpointCredentialEncrypted) credential);
+                    }else if(credential instanceof OAuthEndpointCredentialEncrypted){
+                        credential = oAuthEndpointCredentialHelper.getOAuthEndpointCredential((OAuthEndpointCredentialEncrypted) credential);
+                    }
+                    return credential;
+                });
     }
 
     /**
