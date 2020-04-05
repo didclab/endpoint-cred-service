@@ -9,35 +9,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/endpoint-cred")
 public class EndpointCredentialController {
     @Autowired
     private UserCredentialService userCredentialService;
 
-    @GetMapping("/list")
-    public Mono<CredListResponse> getCredential(@RequestParam String type){
-        return userCredentialService.fetchCredentialList("" ,type);
+    @GetMapping("/{type}")
+    public Mono<CredListResponse> getCredential(@PathVariable String type, Mono<Principal> principal){
+        return principal.map(Principal::getName)
+                .flatMap(userId -> userCredentialService.fetchCredentialList(userId ,type));
     }
 
-    @GetMapping("/get-cred")
-    public Mono<EndpointCredential> getCredential(@RequestParam String type, @RequestParam String id){
-        id.replace(".","!");
-        return userCredentialService.getCredential("aashish_jain@live!com" ,type, id);
+    @GetMapping("/{type}/{id}")
+    public Mono<EndpointCredential> getCredential(@PathVariable String type, @PathVariable String accountId, Mono<Principal> principal){
+        return principal.map(Principal::getName)
+                .flatMap(userId -> userCredentialService.getCredential(userId ,type, accountId));
     }
 
-    @PostMapping("/save/account-cred")
-    public void addCredential(@RequestBody SaveNewAccountCredRequest request){
-        userCredentialService.saveCredential(request.getEmail(), request.getType(), request.getCredential());
+    @PostMapping("/account-cred")
+    public Mono<Void> addCredential(@RequestBody SaveNewAccountCredRequest request, Mono<Principal> principal){
+       return principal.map(Principal::getName)
+               .flatMap(userId -> userCredentialService.saveCredential(userId, request.getType(), request.getCredential()));
     }
 
-    @PostMapping("/save/oauth-cred")
-    public void addCredential(@RequestBody SaveNewOAuthCredRequest request){
-        userCredentialService.saveCredential(request.getEmail(), request.getType(), request.getCredential());
+    @PostMapping("/oauth-cred")
+    public Mono addCredential(@RequestBody SaveNewOAuthCredRequest request, Mono<Principal> principal){
+        return principal.map(Principal::getName)
+                .flatMap(userId -> userCredentialService.saveCredential(userId, request.getType(), request.getCredential()));
     }
 
-    @DeleteMapping("/delete")
-    public void deleteCredential(@RequestParam String type, @RequestParam String id){
-        userCredentialService.deleteCredential("", type, id);
+    @DeleteMapping("/{type}/{id}")
+    public Mono<Void> deleteCredential(@PathVariable String type, @PathVariable String id, Mono<Principal> principal){
+        return principal.map(Principal::getName).flatMap(userId -> userCredentialService.deleteCredential(userId, type, id));
     }
 }

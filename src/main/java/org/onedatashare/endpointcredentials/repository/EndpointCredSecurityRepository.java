@@ -3,7 +3,6 @@ package org.onedatashare.endpointcredentials.repository;
 import org.onedatashare.endpointcredentials.component.JWTUtil;
 import org.onedatashare.endpointcredentials.service.EndpointCredentialAuthService;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.onedatashare.endpointcredentials.EndpointCredentialsApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -15,6 +14,8 @@ import org.springframework.security.web.server.context.ServerSecurityContextRepo
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import static org.onedatashare.endpointcredentials.EndpointCredentialsApplication.logger;
 
 @Service
 public class EndpointCredSecurityRepository  implements ServerSecurityContextRepository {
@@ -32,26 +33,21 @@ public class EndpointCredSecurityRepository  implements ServerSecurityContextRep
         return null;
     }
 
-    public String fetchAuthToken(ServerWebExchange serverWebExchange){
+    public String fetchAuthToken(ServerWebExchange serverWebExchange) throws NullPointerException{
         ServerHttpRequest request = serverWebExchange.getRequest();
-        String token = null;
         //Check for token only when the request needs to be authenticated
-        try {
-            token = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            if(token.length() < TOKEN_LEN) {
-                token = null;
-            }
-            token = token.substring(TOKEN_LEN);
-        } catch (NullPointerException npe) {
-            EndpointCredentialsApplication.logger.error("Token Expired");
+        String token = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if(token.length() < TOKEN_LEN) {
+            return null;
         }
-        return token;
+        return token.substring(TOKEN_LEN);
     }
 
     @Override
     public Mono<SecurityContext> load(ServerWebExchange serverWebExchange) {
-        String authToken = this.fetchAuthToken(serverWebExchange);
+        String authToken;
         try {
+            authToken = this.fetchAuthToken(serverWebExchange);
             if (authToken != null) {
                 String email = jwtUtil.getEmailFromToken(authToken);
                 Authentication auth = new UsernamePasswordAuthenticationToken(email, authToken);
@@ -59,8 +55,10 @@ public class EndpointCredSecurityRepository  implements ServerSecurityContextRep
             }
         }
         catch(ExpiredJwtException e){
-            //TODO: add error log
-//            ODSLoggerService.logError("Token Expired");
+            logger.error("Token Expired");
+        }
+        catch (NullPointerException npe){
+            logger.error("No token found");
         }
         return Mono.empty();
     }

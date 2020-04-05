@@ -17,7 +17,6 @@ public class JWTUtil implements Serializable {
     @Value("${springbootwebfluxjjwt.jjwt.secret}")
     private String secret;
 
-
     public Claims getAllClaimsFromToken(String token) {
         return Jwts.parser().setSigningKey(Base64.getEncoder().encodeToString(secret.getBytes())).parseClaimsJws(token).getBody();
     }

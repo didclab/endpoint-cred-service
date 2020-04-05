@@ -10,5 +10,5 @@ import java.util.HashMap;
 @Data
 public class UserCredential {
     private String email;
-    private HashMap<String, HashMap<String, EndpointCredential>> credentialMap;
+    private HashMap<String, HashMap<String, AccountEndpointCredential>> credentialMap;
 }

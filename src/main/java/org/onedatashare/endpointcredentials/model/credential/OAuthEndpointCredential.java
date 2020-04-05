@@ -3,6 +3,7 @@ package org.onedatashare.endpointcredentials.model.credential;
 import org.onedatashare.endpointcredentials.model.error.AlreadyDecryptedException;
 import org.onedatashare.endpointcredentials.model.error.AlreadyEncryptedException;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
@@ -10,6 +11,7 @@ import java.util.Date;
  * POJO for storing OAuth Credentials
  */
 @Data
+@Document
 public class OAuthEndpointCredential extends EndpointCredential{
     private String token;
     private boolean tokenExpires = false;

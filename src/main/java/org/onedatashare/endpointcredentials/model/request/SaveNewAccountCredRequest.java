@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class SaveNewAccountCredRequest {
-    private String email;
     private EndpointCredentialType type;
     private AccountEndpointCredential credential;
 }
