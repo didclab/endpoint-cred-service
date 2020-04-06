@@ -1,8 +1,6 @@
 package org.onedatashare.endpointcredentials.model.credential.entity;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.onedatashare.endpointcredentials.model.credential.encrypted.AccountEndpointCredentialEncrypted;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
@@ -11,11 +9,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Data
 @Document
-@NoArgsConstructor
 public class AccountEndpointCredential extends EndpointCredential {
     private String secret;
+    private byte[] encryptedSecret;
 
-    public AccountEndpointCredential(AccountEndpointCredentialEncrypted credentialEncrypted) {
-        this.accountId = credentialEncrypted.getAccountId();
+    public void setEncryptedSecret(byte[] encryptedSecret){
+        this.encryptedSecret = encryptedSecret;
+        this.secret = null;
+    }
+
+    public void setSecret(String s){
+        this.secret = s;
+        this.encryptedSecret = null;
     }
 }

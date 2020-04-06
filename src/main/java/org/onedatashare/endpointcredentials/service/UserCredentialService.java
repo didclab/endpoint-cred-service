@@ -3,8 +3,6 @@ package org.onedatashare.endpointcredentials.service;
 import org.onedatashare.endpointcredentials.EndpointCredentialsApplication;
 import org.onedatashare.endpointcredentials.encryption.AccountEndpointCredentialHelper;
 import org.onedatashare.endpointcredentials.encryption.OAuthEndpointCredentialHelper;
-import org.onedatashare.endpointcredentials.model.credential.encrypted.AccountEndpointCredentialEncrypted;
-import org.onedatashare.endpointcredentials.model.credential.encrypted.OAuthEndpointCredentialEncrypted;
 import org.onedatashare.endpointcredentials.model.credential.entity.AccountEndpointCredential;
 import org.onedatashare.endpointcredentials.model.credential.entity.OAuthEndpointCredential;
 import org.onedatashare.endpointcredentials.model.credential.entity.UserCredential;
@@ -124,15 +122,16 @@ public class UserCredentialService {
      * @return
      */
     public Mono<CredListResponse> fetchCredentialList(final String userId, final EndpointCredentialType type){
-        return repository.findById(encodeEmail(userId)).map(userCredential -> {
-            List<String> availableCredAccountList = new ArrayList<>();
-            Set<String> endpointCredentialSet = getCredentialList(userCredential, type);
-            if(endpointCredentialSet != null){
-                for(String accountId : endpointCredentialSet){
-                    availableCredAccountList.add(decodeEmail(accountId));
-                }
-            }
-            return new CredListResponse(availableCredAccountList);
+        return repository.findById(encodeEmail(userId))
+                .map(userCredential -> {
+                    List<String> availableCredAccountList = new ArrayList<>();
+                    Set<String> endpointCredentialSet = getCredentialList(userCredential, type);
+                    if(endpointCredentialSet != null){
+                        for(String accountId : endpointCredentialSet){
+                            availableCredAccountList.add(decodeEmail(accountId));
+                        }
+                    }
+                    return new CredListResponse(availableCredAccountList);
         });
     }
 
@@ -148,10 +147,10 @@ public class UserCredentialService {
         return repository.findById(tempUserId)
                 .map(userCredential -> getCredential(userCredential, type, tempAccountId))
                 .map((credential) -> {
-                    if(credential instanceof AccountEndpointCredentialEncrypted) {
-                        credential = accountEndpointCredentialHelper.getAccountEndpointCredential((AccountEndpointCredentialEncrypted) credential);
-                    }else if(credential instanceof OAuthEndpointCredentialEncrypted){
-                        credential = oAuthEndpointCredentialHelper.getOAuthEndpointCredential((OAuthEndpointCredentialEncrypted) credential);
+                    if(credential instanceof AccountEndpointCredential) {
+                        credential = accountEndpointCredentialHelper.getAccountEndpointCredential((AccountEndpointCredential) credential);
+                    }else if(credential instanceof OAuthEndpointCredential){
+                        credential = oAuthEndpointCredentialHelper.getOAuthEndpointCredential((OAuthEndpointCredential) credential);
                     }
                     return credential;
                 });

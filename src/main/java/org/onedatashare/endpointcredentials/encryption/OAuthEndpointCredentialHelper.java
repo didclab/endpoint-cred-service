@@ -3,7 +3,6 @@ package org.onedatashare.endpointcredentials.encryption;
 import com.mongodb.client.model.vault.EncryptOptions;
 import org.bson.BsonBinary;
 import org.bson.BsonString;
-import org.onedatashare.endpointcredentials.model.credential.encrypted.OAuthEndpointCredentialEncrypted;
 import org.onedatashare.endpointcredentials.model.credential.entity.EndpointCredential;
 import org.onedatashare.endpointcredentials.model.credential.entity.OAuthEndpointCredential;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +18,34 @@ public class OAuthEndpointCredentialHelper extends EndpointCredential {
     public static final String RANDOM_ENCRYPTION_TYPE = "AEAD_AES_256_CBC_HMAC_SHA_512-Random";
 
 
-    public OAuthEndpointCredentialEncrypted getEncryptedOAuthEndpointCredential(OAuthEndpointCredential credential) {
-        OAuthEndpointCredentialEncrypted credentialEncrypted = new OAuthEndpointCredentialEncrypted(credential);
-        credentialEncrypted.setEncryptedToken(
-                kmsHandler.getClientEncryption()
-                        .encrypt(new BsonString(credential.getToken()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE))
-        );
-        credentialEncrypted.setEncryptedRefreshToken(
-                kmsHandler.getClientEncryption()
-                        .encrypt(new BsonString(credential.getRefreshToken()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE))
-        );
+    public OAuthEndpointCredential getEncryptedOAuthEndpointCredential(OAuthEndpointCredential credential) {
+        OAuthEndpointCredential credentialEncrypted = (OAuthEndpointCredential) credential.clone();
+        if(credential.getToken() != null) {
+            credentialEncrypted.setEncryptedToken(
+                    kmsHandler.getClientEncryption()
+                            .encrypt(new BsonString(credential.getToken()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE)).toString().getBytes()
+            );
+        }
+        if(credential.getRefreshToken() != null) {
+            credentialEncrypted.setEncryptedRefreshToken(
+                    kmsHandler.getClientEncryption()
+                            .encrypt(new BsonString(credential.getRefreshToken()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE))
+                    .toString().getBytes()
+            );
+        }
         return credentialEncrypted;
     }
 
-    public OAuthEndpointCredential getOAuthEndpointCredential(OAuthEndpointCredentialEncrypted credentialEncrypted){
-        OAuthEndpointCredential credential = new OAuthEndpointCredential(credentialEncrypted);
-        credential.setToken(kmsHandler.getClientEncryption().decrypt(credentialEncrypted.getEncryptedToken()).asString().getValue());
-        credential.setRefreshToken(kmsHandler.getClientEncryption().decrypt(credentialEncrypted.getEncryptedRefreshToken()).asString().getValue());
+    public OAuthEndpointCredential getOAuthEndpointCredential(OAuthEndpointCredential credentialEncrypted){
+        OAuthEndpointCredential credential = (OAuthEndpointCredential) credentialEncrypted.clone();
+        if(credentialEncrypted.getEncryptedToken() != null) {
+            credential.setToken(kmsHandler.getClientEncryption().decrypt(
+                    new BsonBinary(credentialEncrypted.getEncryptedToken())).asString().getValue());
+        }
+        if(credentialEncrypted.getEncryptedRefreshToken() != null) {
+            credential.setRefreshToken(kmsHandler.getClientEncryption()
+                    .decrypt(new BsonBinary(credentialEncrypted.getEncryptedRefreshToken())).asString().getValue());
+        }
         return credential;
     }
 

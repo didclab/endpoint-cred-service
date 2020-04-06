@@ -47,7 +47,7 @@ public class KMSHandler {
         return encryptionKeyBase64;
     }
 
-    public UUID getEncryptionKeyUUID() {
+    UUID getEncryptionKeyUUID() {
         return encryptionKeyUUID;
     }
 
@@ -112,8 +112,6 @@ public class KMSHandler {
     }
 
     public ClientEncryption getClientEncryption() {
-
-
         String keyVaultNamespace = keyVaultDatabase +"."+ keyVaultCollection;
         ClientEncryptionSettings clientEncryptionSettings = ClientEncryptionSettings.builder()
                 .keyVaultMongoClientSettings(MongoClientSettings.builder()
@@ -124,7 +122,6 @@ public class KMSHandler {
                 .build();
 
         ClientEncryption clientEncryption = ClientEncryptions.create(clientEncryptionSettings);
-
         return clientEncryption;
     }
 }

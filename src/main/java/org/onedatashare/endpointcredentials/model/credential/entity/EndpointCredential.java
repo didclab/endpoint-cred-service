@@ -2,7 +2,6 @@ package org.onedatashare.endpointcredentials.model.credential.entity;
 
 import lombok.Data;
 import lombok.SneakyThrows;
-import org.onedatashare.endpointcredentials.model.credential.EndpointCredentialType;
 import org.onedatashare.endpointcredentials.model.error.InvalidTypeException;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Data
 @Document
-public class EndpointCredential extends Object{
+public class EndpointCredential extends Object implements Cloneable{
     protected String accountId;
 
     @SneakyThrows
@@ -22,5 +21,15 @@ public class EndpointCredential extends Object{
             throw new InvalidTypeException(EndpointCredential.class.toString());
         }
         return accountId.toLowerCase().equals(((EndpointCredential) obj).accountId.toLowerCase());
+    }
+
+    @Override
+    public Object clone(){
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

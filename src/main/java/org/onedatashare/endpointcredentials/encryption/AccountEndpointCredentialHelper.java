@@ -3,7 +3,6 @@ package org.onedatashare.endpointcredentials.encryption;
 import com.mongodb.client.model.vault.EncryptOptions;
 import org.bson.BsonBinary;
 import org.bson.BsonString;
-import org.onedatashare.endpointcredentials.model.credential.encrypted.AccountEndpointCredentialEncrypted;
 import org.onedatashare.endpointcredentials.model.credential.entity.AccountEndpointCredential;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,18 +17,23 @@ public class AccountEndpointCredentialHelper {
     public static final String RANDOM_ENCRYPTION_TYPE = "AEAD_AES_256_CBC_HMAC_SHA_512-Random";
 
 
-    public AccountEndpointCredentialEncrypted getEncryptedAccountEndpointCredential(AccountEndpointCredential credential) {
-        AccountEndpointCredentialEncrypted credentialEncrypted = new AccountEndpointCredentialEncrypted(credential);
-        credentialEncrypted.setEncryptedSecret(
-                kmsHandler.getClientEncryption()
-                        .encrypt(new BsonString(credential.getSecret()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE))
-        );
+    public AccountEndpointCredential getEncryptedAccountEndpointCredential(AccountEndpointCredential credential) {
+        AccountEndpointCredential credentialEncrypted = (AccountEndpointCredential) credential.clone();
+        if(credential.getSecret() != null) {
+            byte[] b = kmsHandler.getClientEncryption()
+                    .encrypt(new BsonString(credential.getSecret()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE))
+                    .toString().getBytes();
+            credentialEncrypted.setEncryptedSecret(b);
+        }
         return credentialEncrypted;
     }
 
-    public AccountEndpointCredential getAccountEndpointCredential(AccountEndpointCredentialEncrypted credentialEncrypted){
-        AccountEndpointCredential credential = new AccountEndpointCredential(credentialEncrypted);
-        credential.setSecret(kmsHandler.getClientEncryption().decrypt(credentialEncrypted.getEncryptedSecret()).asString().getValue());
+    public AccountEndpointCredential getAccountEndpointCredential(AccountEndpointCredential credentialEncrypted){
+        AccountEndpointCredential credential = (AccountEndpointCredential) credentialEncrypted.clone();
+        if(credentialEncrypted.getEncryptedSecret() != null) {
+            credential.setSecret(kmsHandler.getClientEncryption().decrypt(
+                    new BsonBinary(credentialEncrypted.getEncryptedSecret())).asString().getValue());
+        }
         return credential;
     }
 
