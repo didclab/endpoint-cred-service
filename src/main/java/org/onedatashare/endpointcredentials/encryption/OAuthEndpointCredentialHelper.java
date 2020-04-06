@@ -23,16 +23,18 @@ public class OAuthEndpointCredentialHelper extends EndpointCredential {
         if(credential.getToken() != null) {
             credentialEncrypted.setEncryptedToken(
                     kmsHandler.getClientEncryption()
-                            .encrypt(new BsonString(credential.getToken()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE)).toString().getBytes()
+                            .encrypt(new BsonString(credential.getToken()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE)).getData()
             );
         }
         if(credential.getRefreshToken() != null) {
             credentialEncrypted.setEncryptedRefreshToken(
                     kmsHandler.getClientEncryption()
                             .encrypt(new BsonString(credential.getRefreshToken()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE))
-                    .toString().getBytes()
+                    .getData()
             );
         }
+        credentialEncrypted.setToken(null);
+        credentialEncrypted.setRefreshToken(null);
         return credentialEncrypted;
     }
 
@@ -46,6 +48,8 @@ public class OAuthEndpointCredentialHelper extends EndpointCredential {
             credential.setRefreshToken(kmsHandler.getClientEncryption()
                     .decrypt(new BsonBinary(credentialEncrypted.getEncryptedRefreshToken())).asString().getValue());
         }
+        credential.setEncryptedToken(null);
+        credential.setEncryptedRefreshToken(null);
         return credential;
     }
 

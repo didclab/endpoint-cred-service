@@ -20,11 +20,11 @@ public class AccountEndpointCredentialHelper {
     public AccountEndpointCredential getEncryptedAccountEndpointCredential(AccountEndpointCredential credential) {
         AccountEndpointCredential credentialEncrypted = (AccountEndpointCredential) credential.clone();
         if(credential.getSecret() != null) {
-            byte[] b = kmsHandler.getClientEncryption()
-                    .encrypt(new BsonString(credential.getSecret()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE))
-                    .toString().getBytes();
-            credentialEncrypted.setEncryptedSecret(b);
+            BsonBinary bsonBinary = kmsHandler.getClientEncryption()
+                    .encrypt(new BsonString(credential.getSecret()), getEncryptOptions(RANDOM_ENCRYPTION_TYPE));
+            credentialEncrypted.setEncryptedSecret(bsonBinary.getData());
         }
+        credentialEncrypted.setSecret(null);
         return credentialEncrypted;
     }
 
@@ -32,8 +32,10 @@ public class AccountEndpointCredentialHelper {
         AccountEndpointCredential credential = (AccountEndpointCredential) credentialEncrypted.clone();
         if(credentialEncrypted.getEncryptedSecret() != null) {
             credential.setSecret(kmsHandler.getClientEncryption().decrypt(
-                    new BsonBinary(credentialEncrypted.getEncryptedSecret())).asString().getValue());
+                    new BsonBinary(credentialEncrypted.getEncryptedSecret()))
+                    .asString().getValue());
         }
+        credential.setEncryptedSecret(null);
         return credential;
     }
 
