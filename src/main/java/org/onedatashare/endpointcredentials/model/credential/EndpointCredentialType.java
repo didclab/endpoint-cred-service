@@ -10,3 +10,4 @@ public enum EndpointCredentialType {
     s3,
     sftp
 }
+

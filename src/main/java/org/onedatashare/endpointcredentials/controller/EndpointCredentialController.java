@@ -1,9 +1,6 @@
 package org.onedatashare.endpointcredentials.controller;
 
-import org.onedatashare.endpointcredentials.model.credential.entity.AccountEndpointCredential;
-import org.onedatashare.endpointcredentials.model.credential.entity.EndpointCredential;
-import org.onedatashare.endpointcredentials.model.credential.EndpointCredentialType;
-import org.onedatashare.endpointcredentials.model.credential.entity.OAuthEndpointCredential;
+import org.onedatashare.endpointcredentials.model.credential.*;
 import org.onedatashare.endpointcredentials.repository.CredListResponse;
 import org.onedatashare.endpointcredentials.service.UserCredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.security.Principal;
+
 
 /**
  * Rest controller for handing request for operations on endpoint credential database
@@ -42,16 +40,16 @@ public class EndpointCredentialController {
     }
 
     @PostMapping("/oauth-cred/{type}")
-    public Mono addCredential(@PathVariable EndpointCredentialType type,
+    public Mono addCredential(@PathVariable OAuthCredentialType type,
                               @RequestBody OAuthEndpointCredential credential, Mono<Principal> principal) {
         return principal.map(Principal::getName)
-                .flatMap(userId -> userCredentialService.saveCredential(userId, type, credential));
+                .flatMap(userId -> userCredentialService.saveCredential(userId, EndpointCredentialType.valueOf(type.toString()), credential));
     }
 
     @DeleteMapping("/{type}/{accountId}")
-    public Mono<Void> deleteCredential(@PathVariable EndpointCredentialType type,
+    public Mono<Void> deleteCredential(@PathVariable AccountCredentialType type,
                                        @PathVariable String accountId, Mono<Principal> principal) {
         return principal.map(Principal::getName)
-                .flatMap(userId -> userCredentialService.deleteCredential(userId, type, accountId));
+                .flatMap(userId -> userCredentialService.deleteCredential(userId, EndpointCredentialType.valueOf(type.toString()), accountId));
     }
 }

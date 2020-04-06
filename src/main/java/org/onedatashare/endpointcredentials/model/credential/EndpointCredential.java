@@ -1,4 +1,4 @@
-package org.onedatashare.endpointcredentials.model.credential.entity;
+package org.onedatashare.endpointcredentials.model.credential;
 
 import lombok.Data;
 import lombok.SneakyThrows;

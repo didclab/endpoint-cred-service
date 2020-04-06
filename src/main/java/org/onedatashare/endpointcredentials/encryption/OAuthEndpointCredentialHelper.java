@@ -3,8 +3,8 @@ package org.onedatashare.endpointcredentials.encryption;
 import com.mongodb.client.model.vault.EncryptOptions;
 import org.bson.BsonBinary;
 import org.bson.BsonString;
-import org.onedatashare.endpointcredentials.model.credential.entity.EndpointCredential;
-import org.onedatashare.endpointcredentials.model.credential.entity.OAuthEndpointCredential;
+import org.onedatashare.endpointcredentials.model.credential.EndpointCredential;
+import org.onedatashare.endpointcredentials.model.credential.OAuthEndpointCredential;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
