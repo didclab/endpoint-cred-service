@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Document
 public class AccountEndpointCredential extends EndpointCredential {
+    private String username;
     private String secret;
     private byte[] encryptedSecret;
 }

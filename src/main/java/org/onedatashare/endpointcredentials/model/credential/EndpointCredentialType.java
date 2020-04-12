@@ -11,3 +11,4 @@ public enum EndpointCredentialType {
     sftp
 }
 
+
