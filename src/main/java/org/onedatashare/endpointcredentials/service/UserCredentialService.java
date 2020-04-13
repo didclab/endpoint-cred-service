@@ -6,6 +6,7 @@ import org.onedatashare.endpointcredentials.encryption.OAuthEndpointCredentialHe
 import org.onedatashare.endpointcredentials.model.credential.AccountEndpointCredential;
 import org.onedatashare.endpointcredentials.model.credential.OAuthEndpointCredential;
 import org.onedatashare.endpointcredentials.model.credential.UserCredential;
+import org.onedatashare.endpointcredentials.model.error.NoSuchCredentialException;
 import org.onedatashare.endpointcredentials.repository.CredListResponse;
 import org.onedatashare.endpointcredentials.repository.UserCredentialRepository;
 import org.onedatashare.endpointcredentials.model.credential.EndpointCredential;
@@ -146,6 +147,8 @@ public class UserCredentialService {
         String tempUserId = encodeEmail(userId), tempAccountId = encodeEmail(accountId);
         return repository.findById(tempUserId)
                 .map(userCredential -> getCredential(userCredential, type, tempAccountId))
+                .filter(endpointCredential -> endpointCredential.getAccountId() != null)
+                .switchIfEmpty(Mono.error(new NoSuchCredentialException(type, accountId)))
                 .map((credential) -> {
                     if(credential instanceof AccountEndpointCredential) {
                         credential = accountEndpointCredentialHelper.getAccountEndpointCredential((AccountEndpointCredential) credential);
