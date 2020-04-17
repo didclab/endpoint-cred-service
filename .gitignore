@@ -87,3 +87,6 @@ nb-configuration.xml
 
 #Key
 masterKey.txt
+
+#Logs
+logs/
