@@ -3,6 +3,8 @@ package org.onedatashare.endpointcredentials.repository;
 import org.onedatashare.endpointcredentials.component.JWTUtil;
 import org.onedatashare.endpointcredentials.service.EndpointCredentialAuthService;
 import io.jsonwebtoken.ExpiredJwtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -15,12 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import static org.onedatashare.endpointcredentials.EndpointCredentialsApplication.logger;
-
 @Service
 public class EndpointCredSecurityRepository  implements ServerSecurityContextRepository {
     private final String TOKEN_PREFIX = "Bearer ";
     private final int TOKEN_LEN = TOKEN_PREFIX.length();
+    private static final Logger logger = LoggerFactory.getLogger(EndpointCredSecurityRepository.class);
 
     @Autowired
     private EndpointCredentialAuthService authService;

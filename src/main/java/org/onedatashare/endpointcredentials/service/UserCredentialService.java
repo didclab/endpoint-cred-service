@@ -1,6 +1,5 @@
 package org.onedatashare.endpointcredentials.service;
 
-import org.onedatashare.endpointcredentials.EndpointCredentialsApplication;
 import org.onedatashare.endpointcredentials.encryption.AccountEndpointCredentialHelper;
 import org.onedatashare.endpointcredentials.encryption.OAuthEndpointCredentialHelper;
 import org.onedatashare.endpointcredentials.model.credential.AccountEndpointCredential;
@@ -11,6 +10,8 @@ import org.onedatashare.endpointcredentials.repository.CredListResponse;
 import org.onedatashare.endpointcredentials.repository.UserCredentialRepository;
 import org.onedatashare.endpointcredentials.model.credential.EndpointCredential;
 import org.onedatashare.endpointcredentials.model.credential.EndpointCredentialType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -40,6 +41,8 @@ public class UserCredentialService {
 
     @Autowired
     private OAuthEndpointCredentialHelper oAuthEndpointCredentialHelper;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserCredentialService.class);
 
     private static Query getFindDocumentByIdQuery(String userId){
         return new Query().addCriteria(Criteria.where("_id").is(encodeEmail(userId)));
@@ -71,7 +74,7 @@ public class UserCredentialService {
             if(hashMap != null)
                 return hashMap.keySet();
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            EndpointCredentialsApplication.logger.error(e.getMessage());
+            logger.error(e.getMessage());
         }
         return new HashSet<>();
     }
@@ -91,7 +94,7 @@ public class UserCredentialService {
             if(hashMap != null && hashMap.get(id) != null)
                 return (EndpointCredential) hashMap.get(id);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            EndpointCredentialsApplication.logger.error(e.getMessage());
+            logger.error(e.getMessage());
         }
         return new EndpointCredential();
     }

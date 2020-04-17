@@ -4,6 +4,8 @@ import org.onedatashare.endpointcredentials.component.JWTUtil;
 import org.onedatashare.endpointcredentials.model.core.Role;
 import io.jsonwebtoken.Claims;
 import org.onedatashare.endpointcredentials.EndpointCredentialsApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +23,7 @@ public class EndpointCredentialAuthService implements ReactiveAuthenticationMana
     @Autowired
     private JWTUtil jwtUtil;
 
+    private static final Logger logger = LoggerFactory.getLogger(EndpointCredentialAuthService.class);
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         String authToken = authentication.getCredentials().toString();
@@ -29,7 +32,7 @@ public class EndpointCredentialAuthService implements ReactiveAuthenticationMana
         try{
             userName = jwtUtil.getEmailFromToken(authToken);
         } catch (Exception e){
-            EndpointCredentialsApplication.logger.error("Invalid token");
+            logger.error("Invalid token");
             return Mono.empty();
         }
 

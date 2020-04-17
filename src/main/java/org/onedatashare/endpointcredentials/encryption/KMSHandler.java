@@ -91,7 +91,7 @@ public class KMSHandler {
 
         byte[] localMasterKey= new byte[96];
 
-        FileInputStream fis = null;
+        FileInputStream fis;
         try {
             fis = new FileInputStream(masterKeyPath);
             fis.read(localMasterKey, 0, 96);
@@ -106,9 +106,8 @@ public class KMSHandler {
                 new AbstractMap.SimpleEntry<>("key",getMasterKey())
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        return Stream.of(
-                new AbstractMap.SimpleEntry<>(kmsProvider, keyMap)
-        ).collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
+        return Stream.of(new AbstractMap.SimpleEntry<>(kmsProvider, keyMap))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public ClientEncryption getClientEncryption() {
