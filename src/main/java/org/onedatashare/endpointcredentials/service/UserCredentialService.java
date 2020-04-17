@@ -34,7 +34,7 @@ public class UserCredentialService {
     private ReactiveMongoTemplate template;
 
     @Autowired
-    private UserCredentialRepository repository;
+    private UserCredentialRepository userCredentialRepository;
 
     @Autowired
     private AccountEndpointCredentialHelper accountEndpointCredentialHelper;
@@ -116,7 +116,8 @@ public class UserCredentialService {
             endpointCredential = oAuthEndpointCredentialHelper.getEncryptedOAuthEndpointCredential((OAuthEndpointCredential) endpointCredential);
         }
         Update update = new Update().set(createPath(type, accountId), endpointCredential);
-        return template.upsert(query, update, UserCredential.class).then();
+        return template.upsert(query, update, UserCredential.class)
+                .then();
     }
 
     /**
@@ -126,7 +127,7 @@ public class UserCredentialService {
      * @return
      */
     public Mono<CredListResponse> fetchCredentialList(final String userId, final EndpointCredentialType type){
-        return repository.findById(encodeEmail(userId))
+        return userCredentialRepository.findById(encodeEmail(userId))
                 .map(userCredential -> {
                     List<String> availableCredAccountList = new ArrayList<>();
                     Set<String> endpointCredentialSet = getCredentialList(userCredential, type);
@@ -148,7 +149,7 @@ public class UserCredentialService {
      */
     public Mono<EndpointCredential> fetchCredential(final String userId, final EndpointCredentialType type, final String accountId){
         String tempUserId = encodeEmail(userId), tempAccountId = encodeEmail(accountId);
-        return repository.findById(tempUserId)
+        return userCredentialRepository.findById(tempUserId)
                 .map(userCredential -> getCredential(userCredential, type, tempAccountId))
                 .filter(endpointCredential -> endpointCredential.getAccountId() != null)
                 .switchIfEmpty(Mono.error(new NoSuchCredentialException(type, accountId)))
@@ -172,7 +173,8 @@ public class UserCredentialService {
     public Mono<Void> deleteCredential(final String userId, final EndpointCredentialType type, final String accountId){
         String tempAccountId = encodeEmail(accountId);
         Query query = getFindDocumentByIdQuery(userId);
-        Update update = new Update().unset(createPath(type, accountId));
-        return template.upsert(query, update, UserCredential.class).then();
+        Update update = new Update().unset(createPath(type, tempAccountId));
+        return template.upsert(query, update, UserCredential.class)
+                .then();
     }
 }
