@@ -1,6 +1,6 @@
 package org.onedatashare.endpointcredentials.model.credential;
 
 public enum OAuthCredentialType{
-    box, dropbox, grdive, globus
+    box, dropbox, gdrive, globus
 }
 
