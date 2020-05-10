@@ -25,38 +25,34 @@ public class EndpointCredentialController {
     @Autowired
     private UserCredentialService userCredentialService;
 
-    @GetMapping("/{type}")
-    public Mono<CredListResponse> getCredential(@PathVariable EndpointCredentialType type, Mono<Principal> principal) {
-        return principal.map(Principal::getName)
-                .flatMap(userId -> userCredentialService.fetchCredentialList(userId, type));
+    @GetMapping("/{userId}/{type}")
+    public Mono<CredListResponse> getCredential(@PathVariable String userId,
+                                                @PathVariable EndpointCredentialType type) {
+        return userCredentialService.fetchCredentialList(userId, type);
     }
 
-    @GetMapping("/{type}/{accountId}")
+    @GetMapping("/{userId}/{type}/{accountId}")
     public Mono<EndpointCredential> getCredential(@PathVariable EndpointCredentialType type,
-                                                  @PathVariable String accountId, Mono<Principal> principal) {
-        return principal.map(Principal::getName)
-                .flatMap(userId -> userCredentialService.fetchCredential(userId, type, accountId));
+                                                  @PathVariable String accountId, @PathVariable String userId) {
+        return userCredentialService.fetchCredential(userId, type, accountId);
     }
 
-    @PostMapping("/account-cred/{type}")
+    @PostMapping("/{userId}/account-cred/{type}")
     public Mono<Void> addCredential(@PathVariable EndpointCredentialType type,
-                                    @RequestBody AccountEndpointCredential credential, Mono<Principal> principal) {
-        return principal.map(Principal::getName)
-                .flatMap(userId -> userCredentialService.saveCredential(userId, type, credential));
+                                    @RequestBody AccountEndpointCredential credential, @PathVariable String userId) {
+        return userCredentialService.saveCredential(userId, type, credential);
     }
 
-    @PostMapping("/oauth-cred/{type}")
+    @PostMapping("/{userId}/oauth-cred/{type}")
     public Mono addCredential(@PathVariable OAuthCredentialType type,
-                              @RequestBody OAuthEndpointCredential credential, Mono<Principal> principal) {
-        return principal.map(Principal::getName)
-                .flatMap(userId -> userCredentialService.saveCredential(userId, EndpointCredentialType.valueOf(type.toString()), credential));
+                              @RequestBody OAuthEndpointCredential credential, @PathVariable String userId) {
+        return userCredentialService.saveCredential(userId, EndpointCredentialType.valueOf(type.toString()), credential);
     }
 
-    @DeleteMapping("/{type}/{accountId}")
+    @DeleteMapping("/{userId}/{type}/{accountId}")
     public Mono<Void> deleteCredential(@PathVariable AccountCredentialType type,
-                                       @PathVariable String accountId, Mono<Principal> principal) {
-        return principal.map(Principal::getName)
-                .flatMap(userId -> userCredentialService.deleteCredential(userId, EndpointCredentialType.valueOf(type.toString()), accountId));
+                                       @PathVariable String accountId, @PathVariable String userId) {
+        return userCredentialService.deleteCredential(userId, EndpointCredentialType.valueOf(type.toString()), accountId);
     }
 
     @ExceptionHandler(NoSuchCredentialException.class)
