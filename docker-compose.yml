@@ -2,20 +2,22 @@ version: '3'
 
 services:
     # Mongo service that runs the MongoDB server container
-    mongodb:
-        image : mongo:4.2.5-bionic
-        container_name: mongodb
+    cred-mongodb:
+        image : mongo:latest
+        container_name: ods-cred-db
         ports :
-            - 27017:27017           # mapping the container's 27017 port to the host machines 27017 port
+            - "27017:27017"           # mapping the container's 27017 port to the host machines 27017 port
         volumes :
             # Please create /data/db directory structure on your host machine if it does not exist already.
             - /data/db:/data/db     # Sharing the hosts database files with the container, so that the data persists even after the container is shut down
         restart : always
-        command : mongod --smallfiles --logpath=/dev/null # --quiet
-
-    redis:
-        image : redis:alpine
-        container_name : redis
-        ports :
-            - 6379:6379           # mapping the container's 27017 port to the host machines 27017 port
-        restart : alwgit
+    ods-cred:
+        build: .
+        container_name: ods-endpoint-cred
+        depends_on:
+          - cred-mongodb
+        ports:
+        - "8081:8081"
+        restart: always
+        env_file:
+          - .ods-cred.env
