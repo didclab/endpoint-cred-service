@@ -50,7 +50,7 @@ public class EndpointCredentialController {
     }
 
     @DeleteMapping("/{userId}/{type}/{accountId}")
-    public Mono<Void> deleteCredential(@PathVariable AccountCredentialType type,
+    public Mono<Void> deleteCredential(@PathVariable EndpointCredentialType type,
                                        @PathVariable String accountId, @PathVariable String userId) {
         return userCredentialService.deleteCredential(userId, EndpointCredentialType.valueOf(type.toString()), accountId);
     }
