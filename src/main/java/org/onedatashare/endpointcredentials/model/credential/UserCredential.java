@@ -15,7 +15,7 @@ public class UserCredential {
     private HashMap<String, OAuthEndpointCredential> dropbox;
     private HashMap<String, OAuthEndpointCredential> gdrive;
     private HashMap<String, OAuthEndpointCredential> box;
-    private HashMap<String, OAuthEndpointCredential> globus;
+    private HashMap<String, OAuthEndpointCredential> gftp;
     private HashMap<String, AccountEndpointCredential> http;
     private HashMap<String, AccountEndpointCredential> ftp;
     private HashMap<String, AccountEndpointCredential> sftp;
