@@ -7,8 +7,9 @@ public enum EndpointCredentialType {
     globus,
     http,
     ftp,
-    s3,
-    sftp
+    //s3,
+    sftp,
+    s3
 }
 
 
