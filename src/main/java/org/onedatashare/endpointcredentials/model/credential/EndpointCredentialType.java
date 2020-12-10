@@ -4,7 +4,7 @@ public enum EndpointCredentialType {
     box,
     dropbox,
     gdrive,
-    globus,
+    gftp,
     http,
     ftp,
     s3,

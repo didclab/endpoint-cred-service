@@ -18,7 +18,7 @@ import java.security.Principal;
  * Rest controller for handing request for operations on endpoint credential database
  */
 @RestController
-@RequestMapping("/endpoint-cred")
+@RequestMapping("v1/endpoint-cred")
 public class EndpointCredentialController {
     public static final Logger logger = LoggerFactory.getLogger(EndpointCredentialController.class);
 
