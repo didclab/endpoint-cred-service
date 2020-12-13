@@ -38,9 +38,9 @@ public class EndpointCredentialController {
     }
 
     @PostMapping("/{userId}/account-cred/{type}")
-    public Mono<Void> addCredential(@PathVariable EndpointCredentialType type,
+    public Mono<Void> addCredential(@PathVariable AccountCredentialType type,
                                     @RequestBody AccountEndpointCredential credential, @PathVariable String userId) {
-        return userCredentialService.saveCredential(userId, type, credential);
+        return userCredentialService.saveCredential(userId, EndpointCredentialType.valueOf(type.toString()), credential);
     }
 
     @PostMapping("/{userId}/oauth-cred/{type}")
