@@ -86,6 +86,7 @@ nb-configuration.xml
 .DS_Store
 
 #Key
+masterKey.txt
 
 #Logs
 logs/
