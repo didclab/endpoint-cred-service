@@ -52,7 +52,7 @@ public class KMSHandler {
     }
 
     public void buildOrValidateVault() {
-        if(doesEncryptionKeyExist()){
+        if (doesEncryptionKeyExist()) {
             return;
         }
         DataKeyOptions dataKeyOptions = new DataKeyOptions();
@@ -60,14 +60,14 @@ public class KMSHandler {
         BsonBinary dataKeyId = getClientEncryption().createDataKey(kmsProvider, dataKeyOptions);
 
         this.encryptionKeyUUID = dataKeyId.asUuid();
-        logger.debug("DataKeyID [UUID]{}",dataKeyId.asUuid());
+        logger.debug("DataKeyID [UUID]{}", dataKeyId.asUuid());
 
         String base64DataKeyId = Base64.getEncoder().encodeToString(dataKeyId.getData());
         this.encryptionKeyBase64 = base64DataKeyId;
-        logger.debug("DataKeyID [base64]: {}",base64DataKeyId);
+        logger.debug("DataKeyID [base64]: {}", base64DataKeyId);
     }
 
-    private boolean doesEncryptionKeyExist(){
+    private boolean doesEncryptionKeyExist() {
         MongoClient mongoClient = MongoClients.create(dbConnectionUri);
         MongoCollection<Document> collection = mongoClient.getDatabase(keyVaultDatabase).getCollection(keyVaultCollection);
 
@@ -78,7 +78,7 @@ public class KMSHandler {
 
         return Optional.ofNullable(doc)
                 .map(o -> {
-                    logger.debug("The Document is {}",doc);
+                    logger.debug("The Document is {}", doc);
                     this.encryptionKeyUUID = (UUID) o.get("_id");
                     this.encryptionKeyBase64 = Base64.getEncoder().encodeToString(new BsonBinary((UUID) o.get("_id")).getData());
                     return true;
@@ -87,23 +87,24 @@ public class KMSHandler {
     }
 
 
-    private byte[] getMasterKey()  {
+    private byte[] getMasterKey() {
 
-        byte[] localMasterKey= new byte[96];
+        byte[] localMasterKey = new byte[96];
 
         FileInputStream fis;
         try {
             fis = new FileInputStream(masterKeyPath);
             fis.read(localMasterKey, 0, 96);
         } catch (Exception e) {
-            logger.error("Error Initializing the master key");
+            logger.error("Error Initializing the master key" + e.getMessage());
         }
+        logger.info("Master Key bytes : " + Arrays.toString(localMasterKey));
         return localMasterKey;
     }
 
     private Map<String, Map<String, Object>> getKMSMap() {
         Map<String, Object> keyMap = Stream.of(
-                new AbstractMap.SimpleEntry<>("key",getMasterKey())
+                new AbstractMap.SimpleEntry<>("key", getMasterKey())
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return Stream.of(new AbstractMap.SimpleEntry<>(kmsProvider, keyMap))
@@ -111,7 +112,7 @@ public class KMSHandler {
     }
 
     public ClientEncryption getClientEncryption() {
-        String keyVaultNamespace = keyVaultDatabase +"."+ keyVaultCollection;
+        String keyVaultNamespace = keyVaultDatabase + "." + keyVaultCollection;
         ClientEncryptionSettings clientEncryptionSettings = ClientEncryptionSettings.builder()
                 .keyVaultMongoClientSettings(MongoClientSettings.builder()
                         .applyConnectionString(new ConnectionString(dbConnectionUri))
